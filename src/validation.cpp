@@ -6093,8 +6093,49 @@ bool InitBlockIndex(const CChainParams& chainparams)
 
     // Only add the genesis block if not reindexing (in which case we reuse the one already on disk)
     if (!fReindex) {
+    
+		//Searching genesis block nNonce
+		CBlock &block = const_cast<CBlock &>(chainparams.GenesisBlock());
+			
+		//hashGenesisBlock = uint256S("0x000000000000024b89b42a942fe0d9fea3bb44ab7bd1b19115dd6a759c0808b8");
+		printf("%s\n",block.GetHash().ToString().c_str());
+		printf("%s\n",hashGenesisBlock.ToString().c_str());
+		printf("%s\n",block.hashMerkleRoot.ToString().c_str());
+			
+		//assert(block.hashMerkleRoot==uint256S("0x365d2aa75d061370c9aefdabac3985716b1e3b4bb7c4af4ed54f25e5aaa42783"));
+		if(true && block.GetHash()!=hashGenesisBlock)
+		{
+			printf("Searching for genesis block...\n");
+			arith_uint256 hashTarget = arith_uint256().SetCompact(block.nBits);
+			uint256 thash;
+			while(true) 
+			{
+				//scrypt_N_1_1_256(BEGIN(block.nVersion),BEGIN(thash),GetNfactor(block.nTime));
+				thash = block.GetHash();
+				if(UintToArith256(thash)<=hashTarget) break;
+				if((block.nNonce & 0xFFF) == 0)
+				{
+					printf("nonce %08X:hash=%s:target=%s\n",block.nNonce,thash.ToString().c_str(),hashTarget.ToString().c_str());
+				}
+				++block.nNonce;
+				if (block.nNonce == 0)
+				{
+					printf("NONCE WRAPPED, incrementing time\n");
+					++block.nTime;
+				}
+			}
+			printf("block.nTime = %u \n", block.nTime);
+			printf("block.nNonce = %u \n", block.nNonce);
+			printf("computed powHash = %s \n", thash.ToString().c_str());
+			printf("block.GetHash = %s\n", block.GetHash().ToString().c_str());
+			printf("block.hashMerkleRoot = %s\n", block.hashMerkleRoot.ToString().c_str());
+				
+		}
+		//printf();
+		assert(block.GetHash() == hashGenesisBlock);
+		
         try {
-            CBlock& block = const_cast<CBlock&> (Params().GenesisBlock());
+            //CBlock& block = const_cast<CBlock&> (Params().GenesisBlock());
             // Start new block file
             unsigned int nBlockSize = ::GetSerializeSize(block, SER_DISK, CLIENT_VERSION);
             CDiskBlockPos blockPos;
