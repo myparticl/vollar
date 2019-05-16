@@ -174,8 +174,8 @@ public:
         genesis = CreateGenesisBlock(
 
                       7052517017282037,
-                      1547165612, // nTime
-                      uint256S("00000000000000000000000000000000000000000000000000000000000000c1"), // nNonce
+                      1558058400, // nTime=1547165612
+                      uint256S("00000000000000000000000000000000000000000000000000000000000000c5"), // nNonce
                       0x2007ffff, // nBits
                       4, // nVersion
                       1747482982717963, // genesisReward
@@ -183,9 +183,10 @@ public:
 
         consensus.hashGenesisBlock = genesis.GetHash();
 //        std::cout <<  consensus.hashGenesisBlock.GetHex() << std::endl;
-        assert(consensus.hashGenesisBlock == uint256S("0804fd488d9f5787d025d8b1e9e199301b5b42bcbe779a4e875983103c6036a8"));
+        //assert(consensus.hashGenesisBlock == uint256S("0804fd488d9f5787d025d8b1e9e199301b5b42bcbe779a4e875983103c6036a8"));
+        //assert(genesis.hashMerkleRoot == uint256S("898ea66248eba5b44db100123c4f09c4e9fe670142268674684752a92461d133"));
+        assert(consensus.hashGenesisBlock == uint256S("00a06ff17d34dc9b33b11ef4b5afaf1cfb1b475a9a9e68677ab479f8b69cc4c7"));
         assert(genesis.hashMerkleRoot == uint256S("898ea66248eba5b44db100123c4f09c4e9fe670142268674684752a92461d133"));
-
         vFixedSeeds.clear();
         vSeeds.clear();
 

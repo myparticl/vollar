@@ -6097,7 +6097,7 @@ bool InitBlockIndex(const CChainParams& chainparams)
 		//Searching genesis block nNonce
 		CBlock &block = const_cast<CBlock &>(chainparams.GenesisBlock());
 			
-		//hashGenesisBlock = uint256S("0x000000000000024b89b42a942fe0d9fea3bb44ab7bd1b19115dd6a759c0808b8");
+		uint256 hashGenesisBlock = uint256S("0x0804fd488d9f5787d025d8b1e9e199301b5b42bcbe779a4e875983103c6036a8");
 		printf("%s\n",block.GetHash().ToString().c_str());
 		printf("%s\n",hashGenesisBlock.ToString().c_str());
 		printf("%s\n",block.hashMerkleRoot.ToString().c_str());
@@ -6107,25 +6107,27 @@ bool InitBlockIndex(const CChainParams& chainparams)
 		{
 			printf("Searching for genesis block...\n");
 			arith_uint256 hashTarget = arith_uint256().SetCompact(block.nBits);
+      arith_uint256 nNonce = UintToArith256(block.nNonce);
 			uint256 thash;
 			while(true) 
 			{
 				//scrypt_N_1_1_256(BEGIN(block.nVersion),BEGIN(thash),GetNfactor(block.nTime));
 				thash = block.GetHash();
 				if(UintToArith256(thash)<=hashTarget) break;
-				if((block.nNonce & 0xFFF) == 0)
-				{
-					printf("nonce %08X:hash=%s:target=%s\n",block.nNonce,thash.ToString().c_str(),hashTarget.ToString().c_str());
-				}
-				++block.nNonce;
-				if (block.nNonce == 0)
+				//if((nNonce & 0x001) == 0)
+				//{
+					printf("nonce %s:hash=%s:target=%s\n",block.nNonce.ToString().c_str(),thash.ToString().c_str(),hashTarget.ToString().c_str());
+				//}
+				++nNonce;
+        block.nNonce = ArithToUint256(nNonce);
+				if (nNonce == 0)
 				{
 					printf("NONCE WRAPPED, incrementing time\n");
 					++block.nTime;
 				}
 			}
 			printf("block.nTime = %u \n", block.nTime);
-			printf("block.nNonce = %u \n", block.nNonce);
+			printf("block.nNonce = %s \n", nNonce.ToString().c_str());
 			printf("computed powHash = %s \n", thash.ToString().c_str());
 			printf("block.GetHash = %s\n", block.GetHash().ToString().c_str());
 			printf("block.hashMerkleRoot = %s\n", block.hashMerkleRoot.ToString().c_str());

@@ -49,7 +49,7 @@ static void _blockmix_salsa8(uint64_t *dest, const uint64_t *src, uint64_t *b, u
 }
 
 // scrypt key derivation: http://www.tarsnap.com/scrypt.html
-
+/*
 void Scrypt(unsigned char *dk, size_t dkLen, const unsigned char *pw, size_t pwLen, const unsigned char *salt, size_t saltLen,
         unsigned n, unsigned r, unsigned p)
 {
@@ -105,7 +105,7 @@ void Scrypt(unsigned char *dk, size_t dkLen, const unsigned char *pw, size_t pwL
     memory_cleanse(v, 128 * r * n);
     delete[] v;
 }
-
+*/
 #define ROTL(a, b) (((a) << (b)) | ((a) >> (32 - (b))))
 
 static inline void xor_salsa8(uint32_t B[16], const uint32_t Bx[16])
@@ -199,7 +199,7 @@ void scrypt_1024_1_1_256_sp_generic(const char *input, char *output, char *scrat
 
     V = (uint32_t *) (((uintptr_t) (scratchpad) + 63) & ~(uintptr_t) (63));
 
-    PBKDF2<CHMAC_SHA256>((uint8_t *) B, 128, (unsigned char *) input, headerLen, (unsigned char *) input, headerLen, 1);
+    //PBKDF2<CHMAC_SHA256>((uint8_t *) B, 128, (unsigned char *) input, headerLen, (unsigned char *) input, headerLen, 1);
 
     for (k = 0; k < 32; k++)
         X[k] = le32dec(&B[4 * k]);
@@ -220,7 +220,7 @@ void scrypt_1024_1_1_256_sp_generic(const char *input, char *output, char *scrat
     for (k = 0; k < 32; k++)
         le32enc(&B[4 * k], X[k]);
 
-    PBKDF2<CHMAC_SHA256>((uint8_t *) output, 32, (unsigned char *) input, headerLen, (uint8_t *) B, 128, 1);
+    //PBKDF2<CHMAC_SHA256>((uint8_t *) output, 32, (unsigned char *) input, headerLen, (uint8_t *) B, 128, 1);
 }
 
 void scrypt_1024_1_1_256(const char *input, char *output)
